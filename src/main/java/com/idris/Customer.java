@@ -1,5 +1,6 @@
 package com.idris;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -8,31 +9,33 @@ import java.util.Objects;
 public class Customer {
     @Id
     @SequenceGenerator(
-            name = "customer_id_sequence",
-            sequenceName = "customer_id_sequence",
+            name = "customer_id_seq",
+            sequenceName = "customer_id_seq",
             allocationSize = 1
 
     )
     @GeneratedValue(
             strategy =  GenerationType.SEQUENCE,
-            generator =  "customer_id_sequence"
+            generator =  "customer_id_seq"
     )
+    @Schema(name = "This is the customer id")
     private Integer id ;
+    @Schema(name = "This is the customer name")
     private String name;
+    @Schema(name = "This is the customer email")
     private String email;
+    @Schema(name = "This is the customer age")
     private Integer age;
 
-  public Customer(Integer id, String name, String email,  Integer age) {
+    public Customer(Integer id, String name, String email,  Integer age) {
       this.id = id;
       this.name = name;
       this.email = email;
       this.age = age;
-  }
-
-    public Customer() {
-
     }
 
+    public Customer() {
+    }
 
     public Integer getId() {
         return id;
@@ -62,6 +65,10 @@ public class Customer {
         return age;
     }
 
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,9 +90,5 @@ public class Customer {
                 ", email='" + email + '\'' +
                 ", age=" + age +
                 '}';
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
     }
 }

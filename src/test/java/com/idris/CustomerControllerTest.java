@@ -27,11 +27,14 @@ import static org.hamcrest.core.Is.is;
 public class CustomerControllerTest {
     private static final int POSTGRES_CONTAINER_PORT_NUMBER = 5432;
     private static final int APP_PORT_NUMBER = 9000;
+    private static final String DATABASE_NAME = "customer";
+    private static final String DATABASE_USER = "zak";
+    private static final String DATABASE_PASSWORD = "zak";
 
     public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-                .withDatabaseName("customer")
-                .withUsername("zak")
-                .withPassword("password")
+                .withDatabaseName(DATABASE_NAME)
+                .withUsername(DATABASE_USER)
+                .withPassword(DATABASE_PASSWORD)
                 .withExposedPorts(POSTGRES_CONTAINER_PORT_NUMBER);
 
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
@@ -39,16 +42,10 @@ public class CustomerControllerTest {
             TestPropertyValues.of(
                     "spring.datasource.url=" + postgres.getJdbcUrl(),
                     "spring.datasource.username=" + postgres.getUsername(),
-                    "spring.datasource.password=" + postgres.getPassword(),
-                    "spring.liquibase.url=" + postgres.getJdbcUrl(),
-                    "spring.liquibase.user=" + postgres.getUsername(),
-                    "spring.liquibase.password=" + postgres.getPassword(),
-                    "spring.liquibase.enabled=true",
-                    "spring.liquibase.change-log=classpath:/migrations.xml" //path to your liquibase migrations
+                    "spring.datasource.password=" + postgres.getPassword()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
-
 
     @BeforeAll
     public static void start() {
@@ -61,22 +58,36 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void shouldGetCustomer() {
-        System.out.println(postgres.getJdbcUrl());
-        Jdbi jdbi = Jdbi.create(postgres.getJdbcUrl(), "zak", "password");
+    public void callingGetCustomerShouldReturnAllFields() {
+        Jdbi jdbi = Jdbi.create(postgres.getJdbcUrl(), DATABASE_USER, DATABASE_PASSWORD);
+        jdbi.withHandle(handle -> handle.createUpdate("INSERT INTO customer(id, name, email, age) VALUES (:id, :name, :email, :age)")
+                .bind("id", 1)
+                .bind("name", "alice")
+                .bind("email", "alice@gmail.com")
+                .bind("age", 13)
+                .execute());
 
-        jdbi.withHandle(handle -> handle.execute("INSERT INTO \"customers\" (id, \"name\", \"email\", \"age\") VALUES (?, ?, ?, ?)", 1, "Alice", "Alicce@gmail.com", 13));
-
+        /*
+        JSON output looks like this:
+        [
+            {
+                "id": 1,
+                "name": "alice",
+                "email": "alice@gmail.com",
+                "age": 31
+            }
+        ]
+         */
 
         given()
                 .port(APP_PORT_NUMBER)
                 .when()
-                .get("/api/customers")
+                .get("/api/v1/customers")
                 .then()
                 .statusCode(200)
-                .body("id", is(1))
-                .body("name", is("Alice"))
-                .body("email", is("Alice@gmail.com"));
+                .body("[0].id", is(1))
+                .body("[0].name", is("alice"))
+                .body("[0].email", is("alice@gmail.com"));
 
     }
 
@@ -94,7 +105,7 @@ public class CustomerControllerTest {
         given()
                 .port(APP_PORT_NUMBER)
                 .when()
-                .get("http://localhost:8000/api/customers")
+                .get("api/v1/customers")
                 .then()
                 .statusCode(200)
                 .body("id", is(null))

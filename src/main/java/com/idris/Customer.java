@@ -22,17 +22,15 @@ public class Customer {
     private String email;
     private Integer age;
 
-  public Customer(Integer id, String name, String email,  Integer age) {
+    public Customer(Integer id, String name, String email,  Integer age) {
       this.id = id;
       this.name = name;
       this.email = email;
       this.age = age;
-  }
-
-    public Customer() {
-
     }
 
+    public Customer() {
+    }
 
     public Integer getId() {
         return id;
@@ -62,6 +60,10 @@ public class Customer {
         return age;
     }
 
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,9 +85,5 @@ public class Customer {
                 ", email='" + email + '\'' +
                 ", age=" + age +
                 '}';
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
     }
 }

@@ -16,7 +16,7 @@ public class CustomerService {
     }
 
     public void addCustomer(NewCustomerRequest request) {
-        Customer  customer = new Customer();
+        Customer customer = new Customer();
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
         customer.setAge(request.getAge());
@@ -29,7 +29,7 @@ public class CustomerService {
 
     public void updateCustomer(Integer id, NewCustomerRequest request) {
         customerRepo.deleteById(id);
-        Customer  customer = new Customer();
+        Customer customer = new Customer();
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
         customer.setAge(request.getAge());

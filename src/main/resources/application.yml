@@ -2,9 +2,11 @@ server:
   port: 9000
 spring:
   dataSource:
-    url: jdbc:postgresql://localhost:5432/customer
+    url: jdbc:postgresql://localhost:5432/user
     username: user
     password: password
+  liquibase:
+    change-log: classpath:/migrations.xml
   jpa:
     properties:
       hibernate:

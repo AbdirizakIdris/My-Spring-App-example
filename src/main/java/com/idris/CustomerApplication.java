@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title ="Book Application Specification", description = "API Documentation for using the Book Application"))
+@OpenAPIDefinition(info = @Info(title ="Customer management system", description = "API Documentation for using the Customer Management System Application"))
 public class CustomerApplication {
 
     public static void main(String[] args) {

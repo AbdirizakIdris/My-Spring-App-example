@@ -2,7 +2,7 @@ server:
   port: 9000
 spring:
   dataSource:
-    url: jdbc:postgresql://localhost:5332/user
+    url: jdbc:postgresql://localhost:5432/user
     username: user
     password: password
   liquibase:
